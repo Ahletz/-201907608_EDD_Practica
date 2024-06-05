@@ -1,4 +1,34 @@
 #include <iostream>
+#include <fstream>
+#include "json.hpp"
+
+using json = nlohmann::json;
+
+json leerJSON() {
+    std::ifstream inputFile("C:/Users/ludwi/OneDrive/Escritorio/EDD VACAS/-201907608_EDD_Practica/Datos.json");
+    json jsonData;
+
+    if (inputFile.is_open()) {
+        inputFile >> jsonData;
+        inputFile.close();
+    } else {
+        std::cerr << "No se pudo abrir el archivo: " << std::endl;
+        throw std::runtime_error("Archivo no encontrado");
+    }
+
+     // Mostrar el contenido del JSON
+    //std::cout << jsonData.dump(4) << std::endl;
+
+    // Acceder a los elementos del JSON
+    std::string nombre = jsonData["nombre"];
+    int edad = jsonData["edad"];
+    std::vector<std::string> amigos = jsonData["amigos"].get<std::vector<std::string>>();
+
+    std::cout << nombre << std::endl;
+    std::cout << edad << std::endl;
+
+    return jsonData;
+}
 
 int main(int argc, char const *argv[])
 {   
@@ -27,7 +57,7 @@ int main(int argc, char const *argv[])
         switch (seleccion)
         {
         case 1:
-            /* code */
+            leerJSON();
             break;
         case 2:
             /* code */
@@ -57,3 +87,5 @@ int main(int argc, char const *argv[])
     
     return 0;
 }
+
+
