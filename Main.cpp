@@ -30,6 +30,8 @@ json leerJSON() {
     return jsonData;
 }
 
+
+//LISTA CIRCULAR DOBLEMENTE ENLAZADA
 struct NodoCircularD
 {
     //VARIABLES DEL NODO 
@@ -169,6 +171,212 @@ class CircularDoble
     }
 
 };
+
+
+//COLA DE PASAJEROS
+
+// Estructura para almacenar los datos del pasajero
+struct Pasajero {
+
+    //
+    std::string nombre;
+    std::string nacionalidad;
+    std::string numeroPasaporte;
+    std::string vuelo;
+    int asiento;
+    std::string destino;
+    std::string origen;
+    int equipajeFacturado;
+
+    //siguiente en la cola
+    Pasajero* siguiente;
+
+    //constructor
+    Pasajero(std::string nombre, std::string nacionalidad, std::string numeroPasaporte, std::string vuelo,int asiento, std::string destino, std::string origen, int equipajeFacturado)
+    {
+        this-> nombre = nombre;
+        this-> nacionalidad = nacionalidad;
+        this-> numeroPasaporte = numeroPasaporte;
+        this-> vuelo = vuelo;
+        this-> asiento = asiento;
+        this-> destino = destino;
+        this-> origen = origen;
+        this-> equipajeFacturado = equipajeFacturado;
+
+        this-> siguiente = nullptr;
+    }
+};
+
+// Clase para la cola
+class Cola {
+
+private:
+    Pasajero* frente; //primer pasajero
+    Pasajero* fondo; //ultimo pasajero
+
+public:
+
+    Cola() : frente(nullptr), fondo(nullptr) {}
+
+    // Método para agregar un pasajero a la cola
+    void agregar(std::string nombre, std::string nacionalidad, std::string numeroPasaporte, std::string vuelo, int asiento, std::string destino, std::string origen, int equipajeFacturado) {
+        Pasajero* nuevoPasajero = new Pasajero(nombre, nacionalidad, numeroPasaporte, vuelo, asiento, destino, origen, equipajeFacturado);
+        if (fondo == nullptr) {
+            frente = fondo = nuevoPasajero;
+        } else {
+            fondo->siguiente = nuevoPasajero;
+            fondo = nuevoPasajero;
+        }
+    }
+
+    // Método para eliminar un pasajero de la cola
+    void eliminar() {
+        if (frente == nullptr) {
+            std::cout << "La cola está vacía. No se puede eliminar." << std::endl;
+            return;
+        }
+        Pasajero* temp = frente;
+        frente = frente->siguiente;
+        if (frente == nullptr) {
+            fondo = nullptr;
+        }
+        delete temp;
+    }
+
+    // Método para mostrar los pasajeros en la cola
+    void mostrar() {
+        if (frente == nullptr) {
+           std::cout << "La cola está vacía." << std::endl;
+            return;
+        }
+        Pasajero* temp = frente;
+        while (temp != nullptr) {
+            std::cout << "Nombre: " << temp->nombre << ", Nacionalidad: " << temp->nacionalidad << ", Número de Pasaporte: " << temp->numeroPasaporte
+                 << ", Vuelo: " << temp->vuelo << ", Asiento: " << temp->asiento << ", Destino: " << temp->destino
+                 << ", Origen: " << temp->origen << ", Equipaje Facturado: " << temp->equipajeFacturado << std::endl;
+            temp = temp->siguiente;
+        }
+    }
+};
+
+// Nodo para la pila
+struct NodoPila {
+    Pasajero pasajero;
+    NodoPila* siguiente;
+
+    NodoPila(Pasajero p) : pasajero(p), siguiente(nullptr) {}
+};
+
+// Clase para la pila
+class Pila {
+private:
+    NodoPila* tope;
+
+public:
+    Pila() : tope(nullptr) {}
+
+    // Método para agregar un pasajero a la pila
+    void agregar(Pasajero pasajero) {
+        NodoPila* nuevoNodo = new NodoPila(pasajero); //crea un nuevo pasajero en la pila
+        nuevoNodo->siguiente = tope;
+        tope = nuevoNodo;
+    }
+
+    // Método para eliminar un pasajero de la pila
+    void eliminar() {
+        if (tope == nullptr) {
+            std::cout << "La pila está vacía. No se puede eliminar." << std::endl;
+            return;
+        }
+        NodoPila* temp = tope;
+        tope = tope->siguiente;
+        delete temp;
+    }
+
+    // Método para mostrar los pasajeros en la pila
+    void mostrar() {
+        if (tope == nullptr) {
+            std::cout << "La pila está vacía." << std::endl;
+            return;
+        }
+        NodoPila* temp = tope;
+        while (temp != nullptr) {
+            std::cout << "Nombre: " << temp->pasajero.nombre << ", Nacionalidad: " << temp->pasajero.nacionalidad << ", Número de Pasaporte: " << temp->pasajero.numeroPasaporte
+                 << ", Vuelo: " << temp->pasajero.vuelo << ", Asiento: " << temp->pasajero.asiento << ", Destino: " << temp->pasajero.destino
+                 << ", Origen: " << temp->pasajero.origen << ", Equipaje Facturado: " << temp->pasajero.equipajeFacturado << std::endl;
+            temp = temp->siguiente;
+        }
+    }
+};
+
+// Nodo para la lista enlazada doble
+struct NodoListaDoble {
+
+    Pasajero pasajero;
+    NodoListaDoble* anterior;
+    NodoListaDoble* siguiente;
+
+    NodoListaDoble(Pasajero p) : pasajero(p), anterior(nullptr), siguiente(nullptr) {}
+};
+
+// Clase para la lista enlazada doble
+class ListaEnlazadaDoble {
+private:
+    NodoListaDoble* cabeza;
+
+public:
+    ListaEnlazadaDoble() : cabeza(nullptr) {}
+
+    // Método para agregar un pasajero al final de la lista
+    void agregarAlFinal(Pasajero pasajero) {
+        NodoListaDoble* nuevoNodo = new NodoListaDoble(pasajero);
+        if (cabeza == nullptr) {
+            cabeza = nuevoNodo;
+        } else {
+            NodoListaDoble* temp = cabeza;
+            while (temp->siguiente != nullptr) {
+                temp = temp->siguiente;
+            }
+            temp->siguiente = nuevoNodo;
+            nuevoNodo->anterior = temp;
+        }
+    }
+
+    // Método para eliminar un pasajero de la lista
+    void eliminar(NodoListaDoble* nodo) {
+        if (nodo == nullptr) {
+            std::cout << "El nodo no existe en la lista." << std::endl;
+            return;
+        }
+        if (nodo == cabeza) {
+            cabeza = nodo->siguiente;
+        }
+        if (nodo->anterior != nullptr) {
+            nodo->anterior->siguiente = nodo->siguiente;
+        }
+        if (nodo->siguiente != nullptr) {
+            nodo->siguiente->anterior = nodo->anterior;
+        }
+        delete nodo;
+    }
+
+    // Método para mostrar los pasajeros en la lista
+    void mostrar() {
+        if (cabeza == nullptr) {
+            std::cout << "La lista está vacía." << std::endl;
+            return;
+        }
+        NodoListaDoble* temp = cabeza;
+        while (temp != nullptr) {
+            std::cout << "Nombre: " << temp->pasajero.nombre << ", Nacionalidad: " << temp->pasajero.nacionalidad << ", Número de Pasaporte: " << temp->pasajero.numeroPasaporte
+                 << ", Vuelo: " << temp->pasajero.vuelo << ", Asiento: " << temp->pasajero.asiento << ", Destino: " << temp->pasajero.destino
+                 << ", Origen: " << temp->pasajero.origen << ", Equipaje Facturado: " << temp->pasajero.equipajeFacturado << std::endl;
+            temp = temp->siguiente;
+        }
+    }
+};
+
+
 
 
 int main(int argc, char const *argv[])
