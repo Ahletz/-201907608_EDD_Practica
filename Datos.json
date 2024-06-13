@@ -1,5 +1,57 @@
-{
-    "nombre": "Juan",
-    "edad": 25,
-    "amigos": ["Maria", "Pedro", "Luis"]
-}
+[
+    {
+        "vuelo": "AM101",
+        "numero_de_registro": "N12345",
+        "modelo": "Boeing 737",
+        "fabricante": "Boeing",
+        "ano_fabricacion": 2010,
+        "capacidad": 180,
+        "peso_max_despegue": 70000,
+        "aerolinea": "Aeroméxico",
+        "estado": "En servicio"
+    },
+    {
+        "vuelo": "DL405",
+        "numero_de_registro": "N67890",
+        "modelo": "Airbus A320",
+        "fabricante": "Airbus",
+        "ano_fabricacion": 2015,
+        "capacidad": 160,
+        "peso_max_despegue": 73500,
+        "aerolinea": "Delta Airlines",
+        "estado": "Mantenimiento"
+    },
+    {
+        "vuelo": "UA230",
+        "numero_de_registro": "N54321",
+        "modelo": "Boeing 777",
+        "fabricante": "Boeing",
+        "ano_fabricacion": 2005,
+        "capacidad": 300,
+        "peso_max_despegue": 77500,
+        "aerolinea": "United Airlines",
+        "estado": "En servicio"
+    },
+    {
+        "vuelo": "AF450",
+        "numero_de_registro": "N09876",
+        "modelo": "Airbus A380",
+        "fabricante": "Airbus",
+        "ano_fabricacion": 2012,
+        "capacidad": 555,
+        "peso_max_despegue": 120000,
+        "aerolinea": "Air France",
+        "estado": "Retirado"
+    },
+    {
+        "vuelo": "LH789",
+        "numero_de_registro": "N11223",
+        "modelo": "Boeing 787",
+        "fabricante": "Boeing",
+        "ano_fabricacion": 2018,
+        "capacidad": 242,
+        "peso_max_despegue": 56000,
+        "aerolinea": "Lufthansa",
+        "estado": "En servicio"
+    }
+]

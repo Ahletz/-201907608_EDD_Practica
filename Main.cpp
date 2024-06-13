@@ -2,34 +2,8 @@
 #include <fstream>
 #include "json.hpp"
 
+
 using json = nlohmann::json;
-
-json leerJSON() {
-    std::ifstream inputFile("C:/Users/ludwi/OneDrive/Escritorio/EDD VACAS/-201907608_EDD_Practica/Datos.json");
-    json jsonData;
-
-    if (inputFile.is_open()) {
-        inputFile >> jsonData;
-        inputFile.close();
-    } else {
-        std::cerr << "No se pudo abrir el archivo: " << std::endl;
-        throw std::runtime_error("Archivo no encontrado");
-    }
-
-     // Mostrar el contenido del JSON
-    //std::cout << jsonData.dump(4) << std::endl;
-
-    // Acceder a los elementos del JSON
-    std::string nombre = jsonData["nombre"];
-    int edad = jsonData["edad"];
-    std::vector<std::string> amigos = jsonData["amigos"].get<std::vector<std::string>>();
-
-    std::cout << nombre << std::endl;
-    std::cout << edad << std::endl;
-
-    return jsonData;
-}
-
 
 //LISTA CIRCULAR DOBLEMENTE ENLAZADA
 struct NodoCircularD
@@ -93,11 +67,15 @@ class CircularDoble
 
         //ciclo que recorre la lista
         do
-        {
+        {   
+            std::cout<< "-------------------------------------------------------------"<< std::endl;
+            std::cout<< "-------------------------------------------------------------"<< std::endl;
             std::cout<<"|| NUMERO DE VUELO: "<<current->vuelo <<std::endl;
             std::cout<<"|| REGISTRO: "<<current->numero_Registro <<std::endl;
             std::cout<<"|| AEROLINEA: "<<current->aerolinea <<std::endl;
             std::cout<<"|| ESTADO: "<<current->estado <<std::endl;
+            std::cout<< "-------------------------------------------------------------"<< std::endl;
+            std::cout<< "-------------------------------------------------------------"<< std::endl;
             current = current -> next; //cambiamos al siguiente nodo que este apuntando
 
         } while (current != head); // si la variable ya no apunta a la cabeza y apunta a nulo termina ciclo
@@ -259,6 +237,7 @@ public:
     }
 };
 
+
 // Nodo para la pila
 struct NodoPila {
     Pasajero pasajero;
@@ -308,6 +287,7 @@ public:
         }
     }
 };
+
 
 // Nodo para la lista enlazada doble
 struct NodoListaDoble {
@@ -376,7 +356,74 @@ public:
     }
 };
 
+//INICIALIZACION ESTRUCTURAS 
+CircularDoble Lista;
 
+
+json leerJSON_Aviones() {
+    
+    std::string documento; //variable con nombre del documento
+
+    std::cout << "INGRESE LA RUTA DEL ARCHIVO: " << std::endl;
+    std::cin >> documento; //INGRESAR EL NUMERO SELECCIONADO DE LA OPCION
+
+    std::cout << "ruta: " <<documento<< std::endl;
+
+    std::ifstream inputFile(documento);
+    json jsonData;
+
+    if (inputFile.is_open()) {
+        inputFile >> jsonData;
+        inputFile.close();
+    } else {
+        std::cerr << "No se pudo abrir el archivo: " << std::endl;
+        throw std::runtime_error("Archivo no encontrado");
+    }
+
+     // Mostrar el contenido del JSON
+    //std::cout << jsonData.dump(4) << std::endl;
+
+    // Acceder a los elementos del JSON
+    for (const auto& aviones : jsonData) {
+
+        //OBTENER LOS ELEMENTOS DEL JSON AVIONES
+        std::string vuelo = aviones["vuelo"];
+        std::string numero_Registro = aviones["numero_de_registro"];
+        std::string modelo = aviones["modelo"];
+        std::string fabricante = aviones["fabricante"];
+        int ano_fabricacion = aviones["ano_fabricacion"];
+        int capacidad = aviones["capacidad"];
+        int peso_maximo = aviones["peso_max_despegue"];
+        std::string aerolinea = aviones["aerolinea"];
+        std::string estado = aviones["estado"];
+
+        /*
+
+        std::cout<< "-------------------------------------------------------------"<< std::endl;
+        std::cout<< vuelo<< std::endl;
+        std::cout<< numero_Registro<< std::endl;
+        std::cout<< modelo<< std::endl;
+        std::cout<< fabricante<< std::endl;
+        std::cout<< ano_fabricacion<< std::endl;
+        std::cout<< capacidad<< std::endl;
+        std::cout<< peso_maximo<< std::endl;
+        std::cout<< aerolinea<< std::endl;
+        std::cout<< estado<< std::endl;
+        std::cout<< "-------------------------------------------------------------"<< std::endl;
+
+        */
+
+        //AGREGAR LOS ELEMENTOS DEL JSON A LA LISTA DOBLE CIRCULAR
+        //Aviones.agregar(vuelo, numero_Registro, modelo, fabricante, ano_fabricacion, capacidad, peso_maximo, aerolinea, estado);
+        Lista.agragar(vuelo, numero_Registro, modelo, fabricante, ano_fabricacion, capacidad, peso_maximo, aerolinea, estado);
+        
+    }
+
+    Lista.Mostrar();
+
+     return jsonData; // Retornar los datos JSON leídos
+
+}
 
 
 int main(int argc, char const *argv[])
@@ -384,6 +431,7 @@ int main(int argc, char const *argv[])
 
     bool exit = true; // VARIABLE DE SALIDA DEL CICLO
     int seleccion; //variable seleccion de menu
+    
    
 
     while (exit)
@@ -406,7 +454,13 @@ int main(int argc, char const *argv[])
         switch (seleccion)
         {
         case 1:
-            leerJSON();
+            try {
+                    json avionesData = leerJSON_Aviones();
+            } catch (const std::runtime_error& e) {
+                    std::cerr << "Error: " << e.what() << std::endl;
+                return 1;
+            }
+
             break;
         case 2:
             /* code */
