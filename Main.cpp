@@ -2,6 +2,8 @@
 #include <fstream>
 #include "json.hpp"
 
+// EJEMPLO DE RUTA: C:/Users/ludwi/OneDrive/Escritorio/EDDv/-201907608_EDD_Practica/Datos.json
+
 
 using json = nlohmann::json;
 
@@ -357,7 +359,9 @@ public:
 };
 
 //INICIALIZACION ESTRUCTURAS 
-CircularDoble Lista;
+CircularDoble Lista1;
+CircularDoble Lista2;
+Cola Pasajeros;
 
 
 json leerJSON_Aviones() {
@@ -415,15 +419,92 @@ json leerJSON_Aviones() {
 
         //AGREGAR LOS ELEMENTOS DEL JSON A LA LISTA DOBLE CIRCULAR
         //Aviones.agregar(vuelo, numero_Registro, modelo, fabricante, ano_fabricacion, capacidad, peso_maximo, aerolinea, estado);
-        Lista.agragar(vuelo, numero_Registro, modelo, fabricante, ano_fabricacion, capacidad, peso_maximo, aerolinea, estado);
+        
+
+        if (estado == "Disponible")
+        {
+            Lista1.agragar(vuelo, numero_Registro, modelo, fabricante, ano_fabricacion, capacidad, peso_maximo, aerolinea, estado);
+        }else
+        {
+            Lista2.agragar(vuelo, numero_Registro, modelo, fabricante, ano_fabricacion, capacidad, peso_maximo, aerolinea, estado);
+        }
+        
+        
         
     }
 
-    Lista.Mostrar();
+    Lista1.Mostrar();
+
+    Lista2.Mostrar();
 
      return jsonData; // Retornar los datos JSON leídos
 
 }
+
+json leerJSON_Pasajeros() {
+    
+    std::string documento; //variable con nombre del documento
+
+    std::cout << "INGRESE LA RUTA DEL ARCHIVO: " << std::endl;
+    std::cin >> documento; //INGRESAR EL NUMERO SELECCIONADO DE LA OPCION
+
+    std::cout << "ruta: " <<documento<< std::endl;
+
+    std::ifstream inputFile(documento);
+    json jsonData;
+
+    if (inputFile.is_open()) {
+        inputFile >> jsonData;
+        inputFile.close();
+    } else {
+        std::cerr << "No se pudo abrir el archivo: " << std::endl;
+        throw std::runtime_error("Archivo no encontrado");
+    }
+
+     // Mostrar el contenido del JSON
+    //std::cout << jsonData.dump(4) << std::endl;
+
+    // Acceder a los elementos del JSON
+    for (const auto& pasajero : jsonData) {
+
+        //OBTENER LOS ELEMENTOS DEL JSON AVIONES
+        std::string nombre = pasajero["nombre"];
+        std::string nacionalidad = pasajero["nacionalidad"];
+        std::string numero_pasaporte = pasajero["numero_de_pasaporte"];
+        std::string vuelo = pasajero["vuelo"];
+        int asiento = pasajero["asiento"];
+        int equipaje = pasajero["equipaje_facturado"];
+        std::string destino = pasajero["destino"];
+        std::string origen = pasajero["origen"];
+
+        Pasajeros.agregar(nombre, nacionalidad, numero_pasaporte,vuelo,asiento,destino,origen,equipaje);
+    }
+
+
+    Pasajeros.mostrar();
+     return jsonData; // Retornar los datos JSON leídos
+
+}
+
+
+// Función para leer un archivo de texto y mostrar su contenido
+void leerArchivo(const std::string& nombreArchivo) {
+
+    std::ifstream archivo(nombreArchivo);
+
+    if (!archivo.is_open()) {
+        std::cerr << "Error al abrir el archivo: " << nombreArchivo << std::endl;
+        return;
+    }
+
+    std::string linea;
+    while (std::getline(archivo, linea)) {
+        std::cout << linea << std::endl; //lee la linea 
+    }
+
+    archivo.close();
+}
+
 
 
 int main(int argc, char const *argv[])
@@ -437,9 +518,9 @@ int main(int argc, char const *argv[])
     while (exit)
     {
         std::cout << "||---------- Menu ----------||" << std::endl;
-        std::cout << "|| 1. CARGAR AVIONES.       ||" << std::endl;
-        std::cout << "|| 2. CARGAR PASAJEROS.     ||" << std::endl;
-        std::cout << "|| 3. CARGA DE MOVIMIENTOS. ||" << std::endl;
+        std::cout << "|| 1. CARGAR AVIONES.       ||" << std::endl; //CARGA COMPLETADA
+        std::cout << "|| 2. CARGAR PASAJEROS.     ||" << std::endl; //carga completa
+        std::cout << "|| 3. CARGA DE MOVIMIENTOS. ||" << std::endl; //no completo, pero si se carga el archivo txt
         std::cout << "|| 4. CONSULTA PASAJEROS.   ||" << std::endl;
         std::cout << "|| 5. VISUALIZAR REPORTES.  ||" << std::endl;
         std::cout << "|| 6. SALIR.                ||" << std::endl;
