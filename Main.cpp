@@ -7,6 +7,7 @@
 
 using json = nlohmann::json;
 
+
 //LISTA CIRCULAR DOBLEMENTE ENLAZADA
 struct NodoCircularD
 {
@@ -150,6 +151,99 @@ class CircularDoble
         
     }
 
+    void Reporte() {
+        
+    // Crear un objeto de salida de archivo
+    std::ofstream archivo("listaCircularDoble.dot");
+
+    // Verificar si el archivo se abrió correctamente
+    if (!archivo.is_open()) {
+        std::cerr << "No se pudo abrir el archivo para escribir." << std::endl;
+        return;
+    }
+
+    // Crear una variable string vacía
+    std::string contenido;
+    int contador = 1;
+
+    contenido += "digraph G {\n"
+                        "    rankdir=LR;\n"
+                        "    node [shape=record];\n";
+
+
+     if (head == nullptr)
+        {
+            std::cout<< "LISTA VACIA, NO SE ENCUENTRA NINGUN ELEMENTO DENTRO!"<< std::endl;
+            return;
+        }
+
+        NodoCircularD* current = head; //variuable currrent apuntador de la cabeza de la lista
+
+        //ciclo que recorre la lista
+        do
+        {   
+
+            // Convertir el entero a string
+            std::string numeroStr = std::to_string(contador);
+
+            // Definición de los nodos
+            std::string aux;
+
+            aux += "node";
+            aux += numeroStr;
+            aux += " [label=\"<prev> | {";
+            aux += current->vuelo;
+            aux += "|";
+            aux += current->numero_Registro;
+            aux += "} | <next>\"];\n";  
+
+            
+            contador ++; //aumenta contador
+
+            contenido += aux;
+
+            current = current -> next; //cambiamos al siguiente nodo que este apuntando
+
+        } while (current != head); // si la variable ya no apunta a la cabeza y apunta a nulo termina ciclo
+
+        int contador2 =1;
+        do
+        {
+            int num1;
+            int num2;
+            std::string aux;
+
+            num1 = contador2;
+            num2 = contador2+1;
+
+            // Convertir el entero a string
+            std::string numeroStr1 = std::to_string(num1);
+            std::string numeroStr2 = std::to_string(num2);
+
+            aux += std::string("nodo") + numeroStr1 + ":next -> node" + numeroStr2 + ":prev;\n" ;
+            aux += std::string("nodo") + numeroStr2 + ":prev -> node" + numeroStr1 + ":next;\n" ;
+
+            contador2 ++;
+            contenido += aux;   
+
+        } while (contador2 != contador);
+
+        std::string fin = std::to_string(contador);
+
+        contenido += std::string("nodo") + fin+ ":next -> node1:prev;\n" ;
+        contenido += std::string("nodo1") + ":prev -> node" + fin + ":next;\n}" ;
+        
+    
+
+    // Escribir el contenido en el archivo
+    archivo << contenido;
+
+    // Cerrar el archivo
+    archivo.close();
+
+    std::cout << "El archivo se escribió correctamente." << std::endl;
+}
+
 };
 
 
@@ -237,6 +331,28 @@ public:
             temp = temp->siguiente;
         }
     }
+
+    // Método para buscar y mostrar un pasajero por su número de pasaporte
+    void buscarPasajero(const std::string &numeroPasaporte) {
+        if (frente == nullptr) {
+            std::cout << "La cola está vacía." << std::endl;
+            return;
+        }
+        Pasajero* temp = frente;
+        while (temp != nullptr) {
+            if (temp->numeroPasaporte == numeroPasaporte) {
+                std::cout << "Pasajero encontrado:" << std::endl;
+                std::cout << "Nombre: " << temp->nombre << ", Nacionalidad: " << temp->nacionalidad << ", Número de Pasaporte: " << temp->numeroPasaporte
+                          << ", Vuelo: " << temp->vuelo << ", Asiento: " << temp->asiento << ", Destino: " << temp->destino
+                          << ", Origen: " << temp->origen << ", Equipaje Facturado: " << temp->equipajeFacturado << std::endl;
+                return;
+            }
+            temp = temp->siguiente;
+        }
+        std::cout << "Pasajero con número de pasaporte " << numeroPasaporte << " no encontrado." << std::endl;
+    }
+
+
 };
 
 
@@ -488,22 +604,78 @@ json leerJSON_Pasajeros() {
 
 
 // Función para leer un archivo de texto y mostrar su contenido
-void leerArchivo(const std::string& nombreArchivo) {
+void leerArchivo() {
 
-    std::ifstream archivo(nombreArchivo);
+    std::string documento; //variable con nombre del documento
+
+    std::cout << "INGRESE LA RUTA DEL ARCHIVO: " << std::endl;
+    std::cin >> documento; //INGRESAR EL NUMERO SELECCIONADO DE LA OPCION
+
+    std::cout << "ruta: " <<documento<< std::endl;
+
+    std::ifstream archivo(documento);
 
     if (!archivo.is_open()) {
-        std::cerr << "Error al abrir el archivo: " << nombreArchivo << std::endl;
+        std::cerr << "Error al abrir el archivo: " << documento << std::endl;
         return;
     }
 
     std::string linea;
     while (std::getline(archivo, linea)) {
         std::cout << linea << std::endl; //lee la linea 
+
+        std::string lineaProcesada = linea;
+    
+        // Eliminar espacios
+        trim(lineaProcesada);
+
+        // Verificar y procesar la línea
+        if (lineaProcesada == "IngresoEquipajes;") {
+
+            std::cout << "Línea de tipo: IngresoEquipajes" << std::endl;
+
+        } else if (lineaProcesada.substr(0, 19) == "MantenimientoAviones") {
+        // Separar los campos
+        std::stringstream ss(lineaProcesada);
+        std::string segmento;
+        std::vector<std::string> segmentos;
+
+        while (std::getline(ss, segmento, ',')) {
+            segmentos.push_back(segmento);
+        }
+
+        // Verificar que la línea tenga los 3 segmentos esperados y termine con ';'
+        if (segmentos.size() == 3 && segmentos[2].back() == ';') {
+            segmentos[2].pop_back(); // Eliminar el ';' final
+
+            // Identificar si es Ingreso o Salida
+            std::string tipo = segmentos[1];
+            std::string identificador = segmentos[2];
+
+            if (tipo == "Ingreso" || tipo == "Salida") {
+                std::cout << "Línea de tipo: MantenimientoAviones" << std::endl;
+                std::cout << "Tipo: " << tipo << std::endl;
+                std::cout << "Identificador: " << identificador << std::endl;
+            } else {
+                std::cout << "Línea desconocida o con formato incorrecto" << std::endl;
+            }
+        } else {
+            std::cout << "Línea desconocida o con formato incorrecto" << std::endl;
+        }
+    } else {
+        std::cout << "Línea desconocida o con formato incorrecto" << std::endl;
+    }
+
+
     }
 
     archivo.close();
 }
+
+void trim(std::string &str) {
+    str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
+}
+
 
 
 
@@ -512,6 +684,7 @@ int main(int argc, char const *argv[])
 
     bool exit = true; // VARIABLE DE SALIDA DEL CICLO
     int seleccion; //variable seleccion de menu
+    std::string pasaporte; //variable con numero de pasaporte
     
    
 
@@ -520,10 +693,10 @@ int main(int argc, char const *argv[])
         std::cout << "||---------- Menu ----------||" << std::endl;
         std::cout << "|| 1. CARGAR AVIONES.       ||" << std::endl; //CARGA COMPLETADA
         std::cout << "|| 2. CARGAR PASAJEROS.     ||" << std::endl; //carga completa
-        std::cout << "|| 3. CARGA DE MOVIMIENTOS. ||" << std::endl; //no completo, pero si se carga el archivo txt
-        std::cout << "|| 4. CONSULTA PASAJEROS.   ||" << std::endl;
+        std::cout << "|| 3. CARGA DE MOVIMIENTOS. ||" << std::endl; //completo
+        std::cout << "|| 4. CONSULTA PASAJEROS.   ||" << std::endl; //consulta completa
         std::cout << "|| 5. VISUALIZAR REPORTES.  ||" << std::endl;
-        std::cout << "|| 6. SALIR.                ||" << std::endl;
+        std::cout << "|| 6. SALIR.                ||" << std::endl; //funciona
 
         std::cin >> seleccion; //INGRESAR EL NUMERO SELECCIONADO DE LA OPCION
 
@@ -544,18 +717,26 @@ int main(int argc, char const *argv[])
 
             break;
         case 2:
-            /* code */
+            try {
+                    json pasajerosData = leerJSON_Pasajeros();
+            } catch (const std::runtime_error& e) {
+                    std::cerr << "Error: " << e.what() << std::endl;
+                return 1;
+            }
             break;
         case 3:
             /* code */
             break;
         case 4:
-            /* code */
+
+            std::cout << "INGRESE EL NUMERO DE PASAPORTE: " << std::endl;
+            std::cin >> pasaporte; //INGRESAR EL NUMERO SELECCIONADO DE LA OPCION
+
+            std::cout << "BUSCANDO EL PASAPORTE: " <<pasaporte<< std::endl;
+            Pasajeros.buscarPasajero(pasaporte);
+
             break;
         case 5:
-            /* code */
-            break;
-        case 6:
             /* code */
             break;
         
