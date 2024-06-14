@@ -352,6 +352,54 @@ public:
         std::cout << "Pasajero con número de pasaporte " << numeroPasaporte << " no encontrado." << std::endl;
     }
 
+    void Reporte() {
+        
+    // Crear un objeto de salida de archivo
+    std::ofstream archivo("listaCircularDoble.dot");
+
+    // Verificar si el archivo se abrió correctamente
+    if (!archivo.is_open()) {
+        std::cerr << "No se pudo abrir el archivo para escribir." << std::endl;
+        return;
+    }
+
+    // Crear una variable string vacía
+    std::string contenido;
+    int contador = 1;
+
+    contenido += "digraph G {\n"
+                        "    rankdir=LR;\n"
+                        "     node [shape=record, style=filled, fillcolor=lightblue];\n";
+
+    
+    Pasajero* temp = frente;
+
+        while (temp != nullptr) {
+
+            std::string numero = std::to_string(contador);
+            std::string numero2 = std::to_string(contador+1);
+            contenido += std::string("nodo") + numero + "[label=\"Nombre:"+ temp->nombre+" | Pasaporte: "+temp->numeroPasaporte+"\"];";
+            contenido += std::string("nodo")+numero+" -> nodo"+numero2;
+            
+            contador++;
+            temp = temp->siguiente;
+        }
+
+        std::string num = std::to_string(contador);
+        contenido+=std::string("nodo")+num+" -> null [label=\"null\", style=dashed];\n }";
+
+        // Escribir el contenido en el archivo
+    archivo << contenido;
+
+    // Cerrar el archivo
+    archivo.close();
+
+    std::cout << "El archivo se escribió correctamente." << std::endl;
+
+
+     
+}
+
 
 };
 
@@ -404,6 +452,55 @@ public:
             temp = temp->siguiente;
         }
     }
+
+    void Reporte() {
+        
+    // Crear un objeto de salida de archivo
+    std::ofstream archivo("listaCircularDoble.dot");
+
+    // Verificar si el archivo se abrió correctamente
+    if (!archivo.is_open()) {
+        std::cerr << "No se pudo abrir el archivo para escribir." << std::endl;
+        return;
+    }
+
+    // Crear una variable string vacía
+    std::string contenido;
+    int contador = 1;
+
+    contenido += "digraph G {\n"
+                        "    rankdir=TB;\n"
+                        "     node [shape=record, style=filled, fillcolor=lightblue];\n";
+
+       
+
+        NodoPila* temp = tope;
+        while (temp != nullptr) {
+
+            std::string numero = std::to_string(contador);
+            std::string numero2 = std::to_string(contador+1);
+
+            contenido += std::string("nodo") + numero + "[label=\"Nombre:"+ temp->pasajero.nombre+" | Pasaporte: "+temp->pasajero.numeroPasaporte+"\"];";
+            contenido += std::string("nodo")+numero+" -> nodo"+numero2;
+
+             contador++;
+            temp = temp->siguiente;
+        }
+
+        std::string num = std::to_string(contador);
+        contenido+=std::string("nodo")+num+" -> null [label=\"null\", style=dashed];\n }";
+
+        // Escribir el contenido en el archivo
+    archivo << contenido;
+
+    // Cerrar el archivo
+    archivo.close();
+
+    std::cout << "El archivo se escribió correctamente." << std::endl;
+
+
+     
+}
 };
 
 
